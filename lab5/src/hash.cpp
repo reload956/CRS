@@ -6,7 +6,7 @@
 
 
 Hashtable::Hashtable(unsigned int Mysize) {
-    if (Mysize<1){Mysize=5;}
+    if (Mysize < 1) { Mysize = 5; }
     vector = new struct element[Mysize];
     status = new bool[Mysize];
     for (int i = 0; i < Mysize; i++) {
@@ -47,42 +47,41 @@ Hashtable::~Hashtable() {
 unsigned int Hashtable::Add(element element1) {
     unsigned int hash1 = Hashing1(element1);
     if (status[hash1] == 0) {
-        unsigned int g = hash1;
-        for (unsigned int i = 0; i < size; i++) {
-            g = Hashing2(g, i);
+
+        unsigned int i=0;
+        unsigned int g=Hashing2(hash1,i);
+        while(status[hash1]) {
             if ((status[g]) && (vector[g].date == element1.date) &&
                 (vector[g].code == element1.code)) {
                 return 2;
             }
+            g = Hashing2(g, i);
         }
         vector[hash1].code = element1.code;
         vector[hash1].data = element1.data;
         vector[hash1].date = element1.date;
         status[hash1] = true;
     } else {
+        bool found = false;
         if (status[hash1] != 0) {
             if ((vector[hash1].date == element1.date) && (vector[hash1].code == element1.code)) {
-                return 2;//throw 4;
+                return 2;
             } else {
-                unsigned int g = hash1;
-                for (unsigned int i = 0; i < size; i++) {
-                    g = Hashing2(g, i);
+                unsigned int i=0;
+                unsigned int g = Hashing2(hash1,i);
+                while((status[g]==true)&&(i<size)){
+                    i++;
                     if ((status[g]) && (vector[g].date == element1.date) && (vector[g].code == element1.code)) {
                         return 2;
                     }
+                    g = Hashing2(g, i);
                 }
-                bool found = false;
-                for (unsigned int i = 0; i < size; i++) {
-                    hash1 = Hashing2(hash1, i);
-                    // Statwriter();
-                    if (!status[hash1]) {
-                        found = true;
-                        vector[hash1].code = element1.code;
-                        vector[hash1].data = element1.data;
-                        vector[hash1].date = element1.date;
-                        status[hash1] = true;
-                        return 0;
-                    }
+                if (i<size){
+                    found=true;
+                    vector[g].code = element1.code;
+                    vector[g].data = element1.data;
+                    vector[g].date = element1.date;
+                    status[g] = true;
                 }
                 if (!found) {
                     return 3;
@@ -102,15 +101,46 @@ bool Hashtable::Del(element element1) {
     if ((status[hash1]) && (vector[hash1].date == element1.date) && (vector[hash1].data == element1.data) &&
         (vector[hash1].code == element1.code)) {
         status[hash1] = false;
+        unsigned int i = 1;
+        hash1 = Hashing2(hash1, i);
+        while ((i < size) && (status[hash1] != false)) {
+            if (status[hash1] != false) {
+                element a;
+                a.date = vector[hash1].date;
+                a.code = vector[hash1].code;
+                a.data = vector[hash1].data;
+                status[hash1] = false;
+                Add(a);
+            }
+            i++;
+            hash1 = Hashing2(hash1, i);
+        }
         found = true;
         return 0;
     } else {
-        for (unsigned int i = 0; i < size; i++) {
-            if ((status[hash1]) && (vector[hash1].date == element1.date) && (vector[hash1].data == element1.data) &&
+        int i = 0;
+        while ((found == false) && (i < size) && (status[hash1]!=false)) {
+            i++;
+            if ((status[hash1]) && (vector[hash1].date == element1.date)&&
                 (vector[hash1].code == element1.code)) {
                 status[hash1] = false;
                 found = true;
                 std::cout << "del hash " << hash1 << std::endl;
+                unsigned int k = i;
+                hash1 = Hashing2(hash1, k);
+                while ((k < size) && (status[hash1] != false)) {
+                    if (status[hash1] != false) {
+                        element a;
+                        a.date = vector[hash1].date;
+                        a.code = vector[hash1].code;
+                        a.data = vector[hash1].data;
+                        status[hash1] = false;
+                        Add(a);
+                    }
+                    k++;
+                    hash1 = Hashing2(hash1, k);
+                }
+
                 return 0;
             } else
                 hash1 = Hashing2(hash1, i);
@@ -129,8 +159,10 @@ unsigned int Hashtable::Search(element element1) {
         return hash1;
     } else {
         bool found = false;
-        for (unsigned int i = 0; i < size; i++) {
+        unsigned int i=0;
+        while((status[hash1]==true)&&(i<size)) {
             hash1 = Hashing2(hash1, i);
+            i++;
             if ((status[hash1] == 1) &&
                 (vector[hash1].date == element1.date) &&
                 (vector[hash1].code == element1.code)) {
@@ -161,8 +193,9 @@ void Hashtable::print() {
     std::cout << std::endl;
     std::cout << std::endl;
 }
-void Error(int c){
-    if(c!=0) {
+
+void Error(int c) {
+    if (c != 0) {
         switch (c) {
             case 1:
                 std::cout << "Attempt to delete non existing element" << std::endl;

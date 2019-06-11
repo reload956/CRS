@@ -33,7 +33,6 @@ public:
     void print();
 
 };
-
 void Error(int c);
 
 #endif //LAB5_HASH_H

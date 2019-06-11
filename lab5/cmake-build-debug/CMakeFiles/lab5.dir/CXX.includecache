@@ -1,0 +1,24 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/igor/CLionProjects/lab5/main.cpp
+iostream
+-
+src/hash.h
+/home/igor/CLionProjects/lab5/src/hash.h
+
+/home/igor/CLionProjects/lab5/src/hash.h
+vector
+-
+string
+-
+iostream
+-
+jmorecfg.h
+-
+
