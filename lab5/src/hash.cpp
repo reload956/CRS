@@ -47,16 +47,6 @@ Hashtable::~Hashtable() {
 unsigned int Hashtable::Add(element element1) {
     unsigned int hash1 = Hashing1(element1);
     if (status[hash1] == 0) {
-
-        unsigned int i=0;
-        unsigned int g=Hashing2(hash1,i);
-        while(status[hash1]) {
-            if ((status[g]) && (vector[g].date == element1.date) &&
-                (vector[g].code == element1.code)) {
-                return 2;
-            }
-            g = Hashing2(g, i);
-        }
         vector[hash1].code = element1.code;
         vector[hash1].data = element1.data;
         vector[hash1].date = element1.date;
@@ -98,6 +88,9 @@ unsigned int Hashtable::Add(element element1) {
 bool Hashtable::Del(element element1) {
     unsigned int hash1 = Hashing1(element1);
     bool found = false;
+     if (status[hash1]==false){
+        return 1;
+    }else {
     if ((status[hash1]) && (vector[hash1].date == element1.date) && (vector[hash1].data == element1.data) &&
         (vector[hash1].code == element1.code)) {
         status[hash1] = false;
@@ -149,7 +142,7 @@ bool Hashtable::Del(element element1) {
     if (!found) {
         return 1;
     }
-
+}
 }
 
 
